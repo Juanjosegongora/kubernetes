@@ -1,1 +1,7 @@
-# proyecto_integrado
+# ORQUESTAR CON KUBERNETES.
+## JUAN JOSE GONGORA CONTRERAS
+
+# INSTALACION DE RANCHER.
+```
+sudo docker run -d -p 80:80 -p 443:443 rancher/rancher
+```
