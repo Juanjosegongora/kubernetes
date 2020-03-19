@@ -12,5 +12,9 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/
 apt-get update
 apt install kubelet kubeadm kubectl -y
 
+# INSTALACION DE MINIKUBE.
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+install minikube-linux-amd64 /usr/local/bin/minikube
+
 # HABILITAR EL SERVICIO DE DOCKER
 systemctl enable docker.service

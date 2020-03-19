@@ -37,6 +37,8 @@ Es una implementacion ligera de kubernetes que crea una maquina virtual localmen
  - minikube start
  - minikube dashboard
 
+Para que esta implementacion fulncione necesita tener instalado `kubelet kubeadm kubectl`
+
 # INSTALACION DE RANCHER.
 ```
 sudo docker run -d -p 80:80 -p 443:443 rancher/rancher
