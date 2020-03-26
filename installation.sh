@@ -18,3 +18,7 @@ install minikube-linux-amd64 /usr/local/bin/minikube
 
 # HABILITAR EL SERVICIO DE DOCKER
 systemctl enable docker.service
+
+# INSTALACION DE KUBERNETES.
+sudo kubeadm init
+

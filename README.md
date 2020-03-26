@@ -29,15 +29,116 @@ En la siguiente imagen podemos ver los componentes mas importantes que tienen un
 - control plane: Nivel de orquestacion de contenedores que expone la API para definir, desplegar y gestionar el ciclo de vida de los contenedores.
 - Data plane: Nivel que proporciona los recursos, como CPU, memoria, red y almacenamiento, para que los pods se puedan ejecutar y conectar a la red.
 
-# OBJETOS DE KUBERNETES.
-Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior
-
 # MINIKUBE.
 Es una implementacion ligera de kubernetes que crea una maquina virtual localmente y despliega un cluster sencillo formado por un solo nodo.
  - minikube start
  - minikube dashboard
 
-Para que esta implementacion fulncione necesita tener instalado `kubelet kubeadm kubectl`
+ # OBJETOS DE KUBERNETES.
+Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
+
+## PARA LA GESTION DE KUBECTL
+- Para lanzar un archivo `YAML`
+    - `kubectl apply -f ngnix.yaml`
+- Para ver objetos:
+    - `kubectl get all`
+    - `kubectl get deployments`
+    - `kubectl get nodes`
+    - `kubectl get pods`
+- Para eliminar objetos:
+    - `kubectl delete deplyment [nombre]`
+    - `kubectl delete node [nombre]`
+    - `kubectl delete pod [nombre]`
+    - `kubectl delete -f [archivo.yaml]`
+
+## TIPOS DE SERVICIOS
+- ClusterIP.
+    - El servicio recibe una Ip interna a nivel de cluster y hace que el servicio solo sea accesible a nivel de cluster.
+- NodePort.
+    - Expone el servicio fuera del cluster concatenando la IP del nodo en el que esta el pod y un numero de puerto entre 30000 y 32767, que es el mismo que todos los nodos.
+- LoadBalancer.
+    - Crea en cloud un balanceador externo con una IP externa asignada.
+- ExternalName.
+    - Expone el servicio usando un nombre.
+
+Para crear uno de estos servicios hay que exponer el deployment y pasarle parametro el tipo que queremos, por ejemplo yn tipo NodePort.
+
+```
+kubectl expose deployment jsonproducer --type=NodePort
+```
+
+### NAMESPACES
+Todos los objetos creados estan en un mismo espacio, llamado default, si quisieramos cambiar ese espacio para tenerlo todo mejor organizado, tendriamos que crearlos.
+
+
+Creacion de un NameSpace.
+```
+kubectl create namespace juan
+```
+
+Creacion de un deployment asignando un NameSpace.
+```
+kubectl run nginxtote --image=nginx --port 80 --namespace juan
+```
+
+Cambiar namespace.
+```
+kubectl config set-context --current --namespace=juan
+```
+
+En este ultimo, todo lo que nos pongamos a hacer afecta solo a los objetos que estén en este NamesSpace, todo lo que mostremos será a partir de esto, quiere decir que si en el NameSpace default tenemos un Deployment que que llame hello-minikube, si cambiamos de NameSpace a `juan` por ejemplo, al mostrar nuestros deployments o pods no los motrará.
+
+### ESCALADO DE APLICACION.
+A la hora de crear un deployment se puede aumentar el numero de replicas de pods que puede tener ese deploymment, y kubernetes automaticamente irá creando tantos pods como pongamos en las diferentes maquinas que tenga acceso. Gracias a esto es posible la actualizacion de aplucaciones en caliente.
+
+Si ejecutamos un deployment de prueba podemos ver lo siguiente.
+```
+kubectl apply -f nginx.yaml
+```
+Nos sale esto:
+```
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   2/2     2            2           17s
+```
+- READY.
+    - Nos dice el numero de replicas(pods) tiene asignados y si estan activos.
+- UP-TO-DATE.
+    - Nos indica numerod e replicas (pods) que estan actualizados.
+- AVAILABLE.
+    - El numero de replicas(pods) disponibles.
+
+Ahora otro ejemplo.
+```
+kubectl run jsonproducer --image=ualmtorres/jsonproducer:v0 --port 80
+```
+```
+kubectl expose deployment jsonproducer --type=NodePort
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+
+
+
+
+
+
+
 
 # INSTALACION DE RANCHER.
 ```
