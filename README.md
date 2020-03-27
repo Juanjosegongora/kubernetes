@@ -108,18 +108,36 @@ nginx   2/2     2            2           17s
     - El numero de replicas(pods) disponibles.
 
 Ahora otro ejemplo.
+
+Creamos un nuevo Deployment.
 ```
 kubectl run jsonproducer --image=ualmtorres/jsonproducer:v0 --port 80
 ```
+
+Y lo escalamos diciendo que queremos cuatro replicas.
 ```
-kubectl expose deployment jsonproducer --type=NodePort
+kubectl scale deployments jsonproducer --replicas=4
+```
+
+Luego al obtener informacion ya sale que tenemos 4.
+```
+kubectl get deployments
 ```
 ```
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+jsonproducer   4/4     4            4           73m
 ```
-```
-```
-```
-```
+
+Una vez hecho esto kubernetes ira enviando los equipos que quieran ver esta conexion a los diferentes workers, con un sistema de balanceo que tiene Kubernetes.
+
+Si queremos bajar el numero de pods nos bastaria con poner el mismo comando que usamos para escalar pero con menos numeros, se encargara de borrar los que vea oportunos.
+
+# DESPLIEGUE DE APLICACIONES MEDIANTE ARCHIVOS YAML.
+
+
+
+
+
 ```
 ```
 ```
