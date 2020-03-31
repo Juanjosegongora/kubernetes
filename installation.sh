@@ -22,3 +22,7 @@ systemctl enable docker.service
 # INSTALACION DE KUBERNETES.
 sudo kubeadm init
 
+# CONFIGURACION.
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
