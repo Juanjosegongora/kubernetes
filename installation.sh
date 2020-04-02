@@ -26,3 +26,7 @@ sudo kubeadm init
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
+
+# K3S
+cd /usr/local/bin/
+wget https://github.com/rancher/k3s/releases/download/v0.2.0/k3s
