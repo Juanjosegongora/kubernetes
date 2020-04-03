@@ -50,10 +50,10 @@ if [ $RESP_K3S -eq "y" ]; then
             k3s agent --server https://$IP_MASTER:6443 --token $TOKEN
         else
             echo "Alguno de los valores de token o IP no me los has introducido"
-            break;
+            break
         fi
     else
         echo "No me has introducido ni 'master' ni 'worker'"
-        break;
+        break
     fi
 fi
