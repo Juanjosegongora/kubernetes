@@ -33,7 +33,7 @@ echo
 
 # K3S
 read -n1 -p "Quires instalar K3S? (y/n) " RESP_K3S
-if [ $RESP_K3S -eq "y" ]; then
+if [ $RESP_K3S = "y" ]; then
     cd /usr/local/bin/
     wget https://github.com/rancher/k3s/releases/download/v0.2.0/k3s
     chmod +x k3s
