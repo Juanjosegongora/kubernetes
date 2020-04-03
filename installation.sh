@@ -36,8 +36,8 @@ if [ $RESP_K3S -eq "y" ]; then
     cd /usr/local/bin/
     wget https://github.com/rancher/k3s/releases/download/v0.2.0/k3s
     chmod +x k3s
-    read -p "Que tipo de nodo es? (master/worker)" TIPO_NODO
-    if [ $TIPO_NODO -eq "master" ]; then
+    read -p "Que tipo de nodo es? (master/worker) " TIPO_NODO
+    if [ $TIPO_NODO -eq "y" ]; then
         k3s server &
         TOKEN=$(cat /var/lib/rancher/k3s/server/node-token)
         echo "Tu token es la siguiente"
