@@ -17,7 +17,7 @@ apt install kubelet kubeadm kubectl -y
 
 # INSTALACION DE MINIKUBE.
 read -n1 -p "Quieres instala minikube? (y/n) " RESP_MINIKUBE
-if [ $RESP_MINIKUBE -eq "y" ]; then
+if [ $RESP_MINIKUBE = "y" ]; then
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     install minikube-linux-amd64 /usr/local/bin/minikube
 fi
@@ -38,12 +38,12 @@ if [ $RESP_K3S -eq "y" ]; then
     wget https://github.com/rancher/k3s/releases/download/v0.2.0/k3s
     chmod +x k3s
     read -p "Que tipo de nodo es? (master/worker) " TIPO_NODO
-    if [ $TIPO_NODO -eq "master" ]; then
+    if [ $TIPO_NODO = "master" ]; then
         k3s server &
         TOKEN=$(cat /var/lib/rancher/k3s/server/node-token)
         echo "Tu token es la siguiente"
         echo $TOKEN
-    elif [ $TIPO_NODO -eq "worker" ]; then
+    elif [ $TIPO_NODO = "worker" ]; then
         read -p "Dame la IP del equipo Master" IP_MASTER
         read -p "Dame El token" TOKEN
         if [ $IP_MASTER > /dev/null ] || [ $TOKEN > /dev/null ]; then
