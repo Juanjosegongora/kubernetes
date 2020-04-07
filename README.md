@@ -132,31 +132,111 @@ Una vez hecho esto kubernetes ira enviando los equipos que quieran ver esta cone
 
 Si queremos bajar el numero de pods nos bastaria con poner el mismo comando que usamos para escalar pero con menos numeros, se encargara de borrar los que vea oportunos.
 
+# K3S
+## CONFIGURACION DE KUBE
+Para configurar El cluster creado por K3s se podria hacer desde el master pero hay una forma mas comoda, que es poder configurarlo desde otra maquina cliente o local, para ello en esa maquina debemos tener instalado Kubectl y algunas cosas que nos pueden servir.
+
+`INSTALACION DE ALGUNOS PAQUETES QUE NOS HACEN FALTA.`
+```
+apt update && apt install apt-transport-https curl git -y
+```
+
+`INSTALACION DE KUBECTL`
+```
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt install kubectl -y
+```
+Cuando este instalado lo configuraremos para que coja todas las credenciales y demas del nodo master, para ello lo hacemos mediante un archivo de configuracion, creamos en nuestra carpeta personal una carpeta que se llame `.kube` de ahi nos conectamos al master mediante scp para coger un archivo de configuracion que se encuentra en `/etc/rancher/k3s` y se llama `k3s.yaml`. Lo cogemos a nuestra maquina con el nombre de config, de la siguiente manera.
+
+```
+mkdir .kube
+cd .kube
+scp [IP_MASTER]:/etc/rancher/k3s/k3s.yaml config
+```
+
+Cuando lo tengamos tendremos que editarlo porque esta configurado para la mauqina local, tendremos que decirle donde se encuentra el master, asi que la linea siguiente
+
+```
+https://localhost:6443
+```
+Cambiamos localhost por la Ip del master en mi caso
+```
+server: https://192.168.122.2:6443
+```
+Cuando lo tengamos configurado solo nos falta general una variable de entorno para kubernetes y decirle que todos los comandos realizados coga informacion del archivo que acabamos de configurar, de la siguiente forma.
+```
+export KUBECONFIG=~/.kube/config
+```
+
+De este modo si ahora probramos a ejecutar la orden `kubectl get nodes` nos saldra la informacion de los nodos como podria ser esta
+```
+NAME     STATUS   ROLES    AGE   VERSION
+master   Ready    <none>   63m   v1.13.4-k3s.1
+node1    Ready    <none>   36m   v1.13.4-k3s.1
+node2    Ready    <none>   20m   v1.13.4-k3s.1
+```
+Ahora podriamos hacer cualquier cosa con kubernetes y el master estaria balanceado entre los nodos
+
+Como prueba podemos crear por ejemplo un deployment con nginx
+```
+kubectl create deploy nginx --image=nginx
+```
+Si obtenemos la informacion de los deployments y los pods con la siguiente orden
+```
+kubectl get deployments,pod
+```
+Podemos ver algo parecido a esto
+```
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/nginx   1/1     1            1           85s
+
+NAME                       READY   STATUS    RESTARTS   AGE
+pod/nginx-5c7588df-kklnn   1/1     Running   0          85s
+```
+Para la conexion a ese pod que hemos creado vamos por medio de la IP del nodo master y creando un servicio de tipo nodeport
+```
+kubectl expose deploy nginx --port=80 --type=NodePort
+```
+Cuando esto termine podemos ver en que puerto se ha mapeado mostrando los servicios con kubectl
+```
+kubectl get services
+```
+Ahora podriamos probar a escalar la aplicacion y que ejecuten varios pods.
+```
+kubectl scale --replicas=3 deploy/nginx
+```
+Y si mostramos los pods
+```
+NAME                   READY   STATUS    RESTARTS   AGE
+nginx-5c7588df-54ls6   1/1     Running   0          37s
+nginx-5c7588df-kklnn   1/1     Running   0          12m
+nginx-5c7588df-vf8gt   1/1     Running   0          37s
+```
+Tambien podriamos ver en que nodo se esta ejecutando cada uno.
+```
+kubectl get pod -o wide
+```
+```
+NAME                   READY   STATUS    RESTARTS   AGE     IP          NODE     NOMINATED NODE   READINESS GATES
+nginx-5c7588df-54ls6   1/1     Running   0          2m35s   10.42.1.3   node1    <none>           <none>
+nginx-5c7588df-kklnn   1/1     Running   0          14m     10.42.2.2   node2    <none>           <none>
+nginx-5c7588df-vf8gt   1/1     Running   0          2m35s   10.42.0.6   master   <none>           <none>
+```
+Si hacemos un cuarto escalado podriamos ver que una de los nodos tendra dos, en mi caso el nodo1
+```
+NAME                   READY   STATUS    RESTARTS   AGE     IP          NODE     NOMINATED NODE   READINESS GATES
+nginx-5c7588df-4wl5t   1/1     Running   0          9s      10.42.1.4   node1    <none>           <none>
+nginx-5c7588df-54ls6   1/1     Running   0          4m56s   10.42.1.3   node1    <none>           <none>
+nginx-5c7588df-kklnn   1/1     Running   0          17m     10.42.2.2   node2    <none>           <none>
+nginx-5c7588df-vf8gt   1/1     Running   0          4m56s   10.42.0.6   master   <none>           <none>
+```
+
+### CREACION DE UN SERVICIO DE TIPO CLUSTER
+
+
 # DESPLIEGUE DE APLICACIONES MEDIANTE ARCHIVOS YAML.
-
-
-
-
-
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-
-
-
-
-
-
-
 
 # INSTALACION DE RANCHER.
 ```
