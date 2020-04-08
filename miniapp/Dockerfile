@@ -18,7 +18,9 @@ ENV APACHE_LOG_DIR /var/log/apache2
 
 RUN git clone https://github.com/juanjosegongora/kubernetes
 
-RUN mv $HOME/kubernetes/miniapp/src/* /var/www/html
+RUN mv kubernetes/miniapp/src/* /var/www/html
+
+RUN rm /var/www/html/index.html
 
 EXPOSE 80
 
