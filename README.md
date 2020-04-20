@@ -133,7 +133,63 @@ Una vez hecho esto kubernetes ira enviando los equipos que quieran ver esta cone
 Si queremos bajar el numero de pods nos bastaria con poner el mismo comando que usamos para escalar pero con menos numeros, se encargara de borrar los que vea oportunos.
 
 # K3S
-## CONFIGURACION DE KUBE
+## INSTALACIONDE SERVIDOR DE K3S
+Para la instalacion del servidor de K3S necesitamos tener como minio un master y un worker, yo lo hare con un Master y dos workers.
+
+Cuando las maquinas esten listas tenemos que empezar desde la maquina `master` a realizar las operaciones, procedemos a descargar el paquete K3S, como K3S por asi decirlo es un comando, lo que haremos sera descargarlo directamente en una ruta del PATH como por ejemplo `/usr/local/bin`
+
+```
+cd /usr/lcoal/bin
+```
+Ahora descargamos el paquete.
+```
+wget https://github.com/rancher/k3s/releases/download/v0.2.0/k3s
+```
+Le proporcionamos permisos de ejecucion.
+```
+chmod +x k3s
+```
+Para comenzar a desplegar el cluster con el nodo master tenemos que poner un comando muy sencillo.
+
+```
+k3s server &
+```
+Con esto el master ya esta listo y el cluster ya esta funcionando y podriamos ejecutar comandos `kubectl` siempre con el comando K3S por delante un ejemplo.
+```
+k3s kubectl get nodes
+```
+Y nos puede salir algo parecido a esto.
+```
+NAME     STATUS     ROLES    AGE   VERSION
+master   Ready      <none>   27h   v1.13.4-k3s.1
+```
+Con esto el master esta listo, ahora tenemos que implementar los workers al cluster, empezamos accediendo a alguno de ellos y descargando el paquete y proporcionando permisos como en el `master` cuando todo eso este listo tenemos que ejecutar una instruccion.
+```
+k3s agent --server https://[IP_MAASTER]]:6443 --token [TOKEN_MASTER]
+```
+Nos encontramos con que no sabemos el token, esto lo podemos sacar en la maquina master en el siguiente archivo `/var/lib/rancher/k3s/server/node-token`
+
+```
+cat /var/lib/rancher/k3s/server/node-token
+```
+El conteido se ese archivo sera el token que necesitamos entonces el comando de arriba en mi caso quedaria algo asi.
+
+```
+k3s agent --server https://192.168.122.2:6443 --token K10d6ccdb07ebdb6594f22aac004bfa36d6c0ed04d584bb295b8cdaf5c57ac582c5::node:5a2356bfd0d35a9fd2dbc55041727a08
+```
+Tendremos que hacer lo mismo con el otro worker y de esta manera mediante el nodo master podriamos ejecutar las intruccioner `kubectl`
+
+```
+k3s kubectl get nodes
+```
+```
+NAME     STATUS   ROLES    AGE   VERSION
+master   Ready    <none>   63m   v1.13.4-k3s.1
+node1    Ready    <none>   36m   v1.13.4-k3s.1
+node2    Ready    <none>   20m   v1.13.4-k3s.1
+```
+
+## CONFIGURACION DE KUBE EN UNA MAQUINA PARA MANEJAR EL CLUSTER.
 Para configurar El cluster creado por K3s se podria hacer desde el master pero hay una forma mas comoda, que es poder configurarlo desde otra maquina cliente o local, para ello en esa maquina debemos tener instalado Kubectl y algunas cosas que nos pueden servir.
 
 `INSTALACION DE ALGUNOS PAQUETES QUE NOS HACEN FALTA.`
@@ -240,5 +296,5 @@ nginx-5c7588df-vf8gt   1/1     Running   0          4m56s   10.42.0.6   master  
 
 # INSTALACION DE RANCHER.
 ```
-sudo docker run -d -p 80:80 -p 443:443 rancher/rancher
+docker run -d -p 80:80 -p 443:443 rancher/rancher
 ```
