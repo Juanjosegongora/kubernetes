@@ -289,12 +289,241 @@ nginx-5c7588df-kklnn   1/1     Running   0          17m     10.42.2.2   node2   
 nginx-5c7588df-vf8gt   1/1     Running   0          4m56s   10.42.0.6   master   <none>           <none>
 ```
 
-### CREACION DE UN SERVICIO DE TIPO CLUSTER
+# INSTALACION DE CLUSTER DE KUBERNETES EN AWS CON RANCHER.
+## INSTALACION DE RANCHER
+Para esto lanzaremos una maquina ec2 en nuestro AWS 
 
+NOTA: `PARA QUE RANCHER FUNCIONE MINIMO TIENE QUE SER UNA MAQUINA DE t2.small`
 
-# DESPLIEGUE DE APLICACIONES MEDIANTE ARCHIVOS YAML.
-
-# INSTALACION DE RANCHER.
+Cuando esa maquina este disponible tendremos que actualizar la maquina e instalar docker.
+```
+apt update && apt install docker -y
+```
+Cuando lo tengamos bastara con lanzar un contendor en docker y podremos acceder a rancher desde el navegador.
 ```
 docker run -d -p 80:80 -p 443:443 rancher/rancher
 ```
+Nos pedira que necesitamos proporcionar una clave para acceder al administrador de rancher
+
+NOTA: `RECOMIENDO QUE AUNQUE SEA UNA PRUEBA LA CLAVE SEA SEGURA PORQUE MAS TARDE LE DAREMOS A RANCHER NUSTRAS CEDENCIALES Y CUALQUIERA PODRIA HACER COSAS SI ACCEDEN CON UNA CLAVE FACIL`.
+
+Despues de eso nos dejara acceder a rancher perfectamente.
+
+## CONFIGURACION DE PERMISOS DE AWS.
+
+Para que todo lo que queremos hacer funcione necesitamos gestionar un servicio que nos ofrece AWS que se trata de IAM, con esto crearemos un usuario para rancher que le permita el acceso a nuestro AWS.
+
+### CREACION DE UN USUARIO EN AWS Y PROPORCIONARLE PERMISOS.
+
+Lo primero es crear el usuario que eso debemos de ir a los servicios de AWS y buscar IAM, alli a la seccion de usuario y como no tenemos ningun usuario nos sugiere crear uno.
+
+Rellenamos el nombre de usuario y despues tenemos que seleccionar que tipo de acceso tendra ese usuario, seleccionaremos el segundo, que s mediante consola. La clave podemos escoger una o que la genere automatica, sugiero automatica.
+
+![](images/rancher/usuario.png)
+
+Seguidamente nos perdira que lo metamos en un grupo para darle permisos, esto por ahora lo dejamos, lo haremos mas tarde. Seguimos creando el usuario dandole a siguiente hasta terminar todos los paso no hay que rellenar nada mas.
+
+Cuando hagamos esto pasaremos a crear politicas y roles de IAM (`Permisos`)
+
+Crearemos una politica para el `controlpane` de nuestro fururo cluster de kubernetes para crear una politica iremos a IAM, politica,crear politica, hay dos formas de hacer esto que es ir seleccionando que permisos queremos proporcionar y el otro mediante un archivo JSON que es lo mismo que lo otro pero es en codigo os mostrare como seria el de codigo, asi es mas facil para que lo copieis
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeTags",
+                "ec2:DescribeInstances",
+                "ec2:DescribeRegions",
+                "ec2:DescribeRouteTables",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVolumes",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:CreateVolume",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:ModifyVolume",
+                "ec2:AttachVolume",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateRoute",
+                "ec2:DeleteRoute",
+                "ec2:DeleteSecurityGroup",
+                "ec2:DeleteVolume",
+                "ec2:DetachVolume",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:DescribeVpcs",
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:AttachLoadBalancerToSubnets",
+                "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
+                "elasticloadbalancing:CreateLoadBalancer",
+                "elasticloadbalancing:CreateLoadBalancerPolicy",
+                "elasticloadbalancing:CreateLoadBalancerListeners",
+                "elasticloadbalancing:ConfigureHealthCheck",
+                "elasticloadbalancing:DeleteLoadBalancer",
+                "elasticloadbalancing:DeleteLoadBalancerListeners",
+                "elasticloadbalancing:DescribeLoadBalancers",
+                "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                "elasticloadbalancing:DetachLoadBalancerFromSubnets",
+                "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+                "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:CreateListener",
+                "elasticloadbalancing:CreateTargetGroup",
+                "elasticloadbalancing:DeleteListener",
+                "elasticloadbalancing:DeleteTargetGroup",
+                "elasticloadbalancing:DescribeListeners",
+                "elasticloadbalancing:DescribeLoadBalancerPolicies",
+                "elasticloadbalancing:DescribeTargetGroups",
+                "elasticloadbalancing:DescribeTargetHealth",
+                "elasticloadbalancing:ModifyListener",
+                "elasticloadbalancing:ModifyTargetGroup",
+                "elasticloadbalancing:RegisterTargets",
+                "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
+                "iam:CreateServiceLinkedRole",
+                "kms:DescribeKey"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
+Lo que estamos haciendo en esta politica es darle a todo aquel que este asociado a esta politica el poder de los permisos como `ejecutar instancias, borrarlas, crear security groups y todo lo relacionado para la gestion que necesita rancher para la creacion del clsuter`
+
+Despues revisamos la politica le ponemos un nombre por ejemplo `controlpane_policy` y la creamos.
+
+Ahora tendremos que hacer una para el `etcd y worker`, el mismo procesp pero el contenido del JSON es diferente, es este
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeRegions",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetRepositoryPolicy",
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:BatchGetImage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+La revisamos y por ejemplo la podemos llamar `etcd_worker_policy`
+
+Lo siguiente es crear roles y asociarlos cada uno a su politica. Para ellos nos vamos a IAM, roles y nuevo rol. Aqui asociaremos la politica para cada uno de los roles, por ejemplo si estamos creando el rol de `controlpane` le asociamos la politica de `controlpane_policy` y a ese rol podemos llamarle `controlpane_role`. Creamos tambien el rol para `etcd_worker_policy` y la llamamos `etcd_worker_role`.
+
+Importante crear otra politica que una estas dos, es decir, creamos otro rol que y le asociamos `controlpane_policy` y `etcd_worker_policy` y por ejemplo podemos llamarla `all_role`
+
+Ahora volveriamos a la creacion de politicas para crear la ultima politica que nos hace falta `PASSROLE`
+
+Necesitaremos lo siguiente
+- ID de nuestra cuenta de amazon, esto lo podemos encontrar dando en nuestro nombre de usuario arriba a la derecha, mi cuenta.
+- REGION esto lo podemos encontrar arriba a la derecha donde pone al lado de nuestro nombre de usuario encontraremos el estado donde estamos y si pulsamos nos dira nuestra region, en mi caso es `us-east-2`
+
+En el siguiente archivo JSON hay datos que hay que cambiar dependiendo de nuestra `REGION, ID_CUENTA, NOMBRE DE ROLES`
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:Describe*",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteKeyPair"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances",
+                "iam:PassRole"
+            ],
+            "Resource": [
+                "arn:aws:ec2:REGION::image/ami-*",
+                "arn:aws:ec2:REGION:ID_CUENTA:instance/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:placement-group/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:volume/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:subnet/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:key-pair/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:network-interface/*",
+                "arn:aws:ec2:REGION:ID_CUENTA:security-group/*",
+                "arn:aws:iam::ID_CUENTA:role/etcd_worker_role",
+                "arn:aws:iam::ID_CUENTA:role/controlpane_role"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RebootInstances",
+                "ec2:TerminateInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "arn:aws:ec2:REGION:ID_CUENTA:instance/*"
+        }
+    ]
+}
+```
+
+Cuando tengamos esto solo nos faltaria volver a los roles y crear el rol para la politica de `PASSROLE` como hemos hecho con las politicas anteriores.
+
+Lo siguiente como nos habiamos dejado el usuario sin darle los permisos ahora es el momento ya que los acabamos de hacer, nos tendriamos que ir a IAM, usuarios, 'nuestro usuario', agregar permisos, crear grupo nos ssaldra la lista de politicas, aqui agregamos las tres politicas que hemos creado antes `controlpane_policy, etcd_worker_policy` y `passrole_policy`. Por ejemplo le podemos llamar `policy_group`
+
+## CREACION DE CLUSTER EN RANCHER.
+
+### AGREGAR CREDENCIALES DE AMAZON A RANCHER.
+Cuando nos vayamos a rancher tenemos que hacer dos cosas previas darle credenciales de AWS del usuario que hemos creado, en rancher nos vamos a `cloud credentials`, `add cloud credential`.
+
+Nos pedira el nombre, tipo de nube(Amazon), nuestra region(Como la que hemos puesto en las politicas), access key y secret key.
+
+Para con seguir el `access key` y `secret key` debemos de ir a amazon y entrar en IAM, usuarios, credenciales de seguridad y le debemos dar a crear una nueva clave de acceso entonces amazon nos dara ambas cosas y las ponemos en rancher.
+
+### CONFIGURAR NODE TEMPLATES
+Lo que vamos a configurar acontinuacion es las caracteristicas de maquinas de los nodos, al darle a agregar nodo nos dira que tipo de Nube que es amazon, la region y nuestra cloud credentials las zonas de red que hay en nuestra region ponemos las que queramos y la subred comgemos la que tenemos por defecto. Cuando le demos a siguiente tocaran los puertos abiertos para la maquina que ponemos que default de rancher esto abrira los que rancher crea oportunos.
+
+Lo siguiente son las especificaciones de la maquina que podemos escoger la instancia que queramos.
+- AMI: Aqui tendremos que poner una ami de rancher que la ami cambia segun al region, dejo un enlace para que se vea la ami segun tu region
+```
+https://github.com/rancher/os/blob/master/README.md/#user-content-amazon
+```
+- IAM INSTANCE PROFILE NAME: Aqui ponemos el nombre del rol en el que hemos juntado las dos politicas antes, el que yo he llamado `all_role`
+- SSH User: Aqui tenemos que poner `rancher`
+
+Y por ultimo poner el nombre del node. 
+
+Para que sirve estod e NODE template realmente. por ejemplo si queremos que el master o los worker sean maquinas diferentes connfiguramos la maquina de una forma u otra creando varios.
+
+### CREACION DEL CLUSTER
+Ya por ultimo crear el cluster, nos vamos a cluster y add cluster, seleccionamos el ec2 y le ponemos nomrbe a nuestro cluster
+
+Ponemos un prefiejo a la maquina, seleccionamos el template que hayamos creado y luego tenemos que seleccionar que nodos seran `etcd, controlpane o worker` podemos poner hasta cuantas queremos crear.
+
+Luego mas abajo nos pondra que cloud provider, deberemos seleccionar que amazon y damos en create y el cluster se empieza a crear.
+
+## LEVANTAR ALGUNA IMAGEN EN EL CLUSTER QUE HEMOS CREADO.

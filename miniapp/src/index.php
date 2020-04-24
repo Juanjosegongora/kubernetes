@@ -40,7 +40,7 @@
             echo "<img src=\"".$res['img']."\"width='250' height='200'/>"."\n";
             echo "<h5 align='center'>".$res['precio']."€"."</h5>"."\n";
             echo "<form action='carrito.php' method='post'>";
-            echo "<input name='carrito' type='submit' value='array($res["nombre"]) '>";
+            echo "<input name='carrito' type='submit' value='array($res["nombre"])'>";
             echo "</form>";
             echo "</div>"."\n";
         }
