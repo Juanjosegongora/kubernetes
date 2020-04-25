@@ -6,7 +6,8 @@
        exit;
     }
     $result = mysqli_query($mysqli, "SELECT * FROM productos ORDER BY id ASC");
-?>
+    $res = 0;
+ ?>
 <html>
 <head>
     <title>Pagina principal</title>
@@ -32,19 +33,16 @@
     </nav>  
     <div align="center">
         <?php
-        echo "<div class="."row>"."\n";
+        echo "<div class="."row>"."<br>";
         while($res = mysqli_fetch_array($result)) {
-            echo "<div class="."col-3>"."\n";
-            echo "<h3 align='center'>".$res['nombre']."</h3>"."\n";
-            echo "<p align='center' class="."lead".">".$res['descripcion']."</p>"."\n";
-            echo "<img src=\"".$res['img']."\"width='250' height='200'/>"."\n";
-            echo "<h5 align='center'>".$res['precio']."€"."</h5>"."\n";
-            echo "<form action='carrito.php' method='post'>";
-            echo "<input name='carrito' type='submit' value='array($res["nombre"])'>";
-            echo "</form>";
-            echo "</div>"."\n";
+            echo "<div class="."col-3>"."<br>";
+            echo "<h3 align='center'>".$res['nombre']."</h3>"."<br>";
+            echo "<p align='center' class="."lead".">".$res['descripcion']."</p>"."<br>";
+            echo "<img src=\"".$res['img']."\"width='250' height='200'/>"."<br>";
+            echo "<h5 align='center'>".$res['precio']."€"."</h5>"."<br>";
+            echo "</div>"."<br>";
         }
-        echo "</div>"."\n";
+        echo "</div>"."<br>";
         mysqli_close($mysqli);
         ?>
     </div>
