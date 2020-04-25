@@ -29,6 +29,7 @@ CREATE TABLE carrito (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO users VALUES (0, 'tote', 'tote', 21, 'perturbrugal@gmail.com');
+INSERT INTO users VALUES (0, 'lamp_user', 'lamp_password', 32, 'admin@admin.er');
 
 INSERT INTO productos VALUES (0, 'Lenovo Ideapad', 'Portatil Gaming', '/images/lenovoideapad.png', 1000);
 INSERT INTO productos VALUES (0, 'Huawei P20Pro', 'Movil de alta gama', '/images/p20pro.png', 900);
