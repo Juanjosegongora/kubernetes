@@ -2,7 +2,7 @@
 ## JUAN JOSE GONGORA CONTRERAS
 
 # QUE ES KUBERNETES.
-Cubernetes en una plataforma de codido abierto para el despligue, escalado y gestion de aplicaciones contenedorizadas.
+Kubernetes en una plataforma de codido abierto para el despligue, escalado y gestion de aplicaciones contenedorizadas.
 
 # CLUSTER DE KUBERNETES.
 Esta compuesto por dos tipos de recursos.
