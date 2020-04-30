@@ -34,7 +34,7 @@ Es una implementacion ligera de kubernetes que crea una maquina virtual localmen
  - minikube start
  - minikube dashboard
 
- # OBJETOS DE KUBERNETES.
+# OBJETOS DE KUBERNETES.
 Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
 
 ## PARA LA GESTION DE KUBECTL
