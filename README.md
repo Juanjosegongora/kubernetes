@@ -297,7 +297,7 @@ NOTA: `PARA QUE RANCHER FUNCIONE MINIMO TIENE QUE SER UNA MAQUINA DE t2.small`
 
 Cuando esa maquina este disponible tendremos que actualizar la maquina e instalar docker.
 ```
-apt update && apt install docker -y
+apt update && apt install docker.io -y
 ```
 Cuando lo tengamos bastara con lanzar un contendor en docker y podremos acceder a rancher desde el navegador.
 ```
@@ -527,3 +527,6 @@ Ponemos un prefiejo a la maquina, seleccionamos el template que hayamos creado y
 Luego mas abajo nos pondra que cloud provider, deberemos seleccionar que amazon y damos en create y el cluster se empieza a crear.
 
 ## LEVANTAR ALGUNA IMAGEN EN EL CLUSTER QUE HEMOS CREADO.
+
+## AUTO ESCALADO HORIZONTAL CON RANCHER.
+Esto se hace mediante HPA, en los pods hay que limitarles los milicpu, sino no nos dejara ponerle un HPA.
