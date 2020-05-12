@@ -527,6 +527,46 @@ Ponemos un prefiejo a la maquina, seleccionamos el template que hayamos creado y
 Luego mas abajo nos pondra que cloud provider, deberemos seleccionar que amazon y damos en create y el cluster se empieza a crear.
 
 ## LEVANTAR ALGUNA IMAGEN EN EL CLUSTER QUE HEMOS CREADO.
+Para hacer un deploy tenemos que irnos a nuestro cluster, system. Desde ahi a la derecha nos sale deploy y seguidamente la configuracion del deploy como su nombre, su docker image, si queremos crearle algun servicio y tal.
+
+Mas abajo tendremos las variables que tendra la imagen de docker, los volumenes que podemos usar con `sercret o config map`. Como un archivo yaml pero en modo grafico, si queremos importat nuesstro archivo porque ya lo tenemos listo tambien lo podemos hacer. Y para finalizar simplemente le damos a launch.
+
+![](images/rancher/creacion_pod.png)
+
+Si por ejemplo hemos creado un nodeport y queremos acceder a esa maquina desde el exterior en el menu de System nos sale nuestro nuevo pod que si nos fijamos debajo de su nombre tenemos el puerto que ha generado rancher random o si hemos puesto nosotros uno manual, solo tenemos que o bien darle ahi y nos lleva automaticamente o tambien si queremos acceder nosotros con ip tendriamos que coger la IP del MASTER junto a ese puerto.
+
+![](images/rancher/pod_creado.png)
 
 ## AUTO ESCALADO HORIZONTAL CON RANCHER.
 Esto se hace mediante HPA, en los pods hay que limitarles los milicpu, sino no nos dejara ponerle un HPA.
+
+Al crear un Deploy tenemos que ver las opciones avanzadas de la creacion e irnos a `Security & Host config` y aqui bajar hasta encontrar CPU reservation y limitarle las CPUs. Si lo dejamos sin reservar HPA no podra realizar el escalado, para probar podemos reservar pocas, por ejemplo 100 o 200 y darle a Launch.
+
+![](images/rancher/reservar_cpu.png)
+
+Seguidamente tenemos que ir a System, resources, HPA, add HPA.
+
+Le pondremos un nombre, seleecionamos en que namespace se encuentra, y nuesto workload(pod), nuestras replicas como minimo y maximo.
+
+Y ya abajo la metrica, que puede ser o de CPU o re memoria RAM, recomiendo la de porcentaje de CPU
+
+![](images/rancher/hpa_listo.png)
+
+Ahora, como podemos probar esto, muy faicl, con la herramienta de apache `apache benchmark` que sino lo tienes instalado en tu linux basta con lo siguiente.
+
+```
+apt isntall apache2_utils
+```
+
+Este comando funciona de la siguiente manera, envia un total de peticiones, y tambien las que le digamos simultaneamente, se veria de la siguiente forma.
+```
+ab -n100000 -c100 http://IP_SERVER/
+```
+
+En este casp envia 100000 peticiones y va enviando 100 simultaneamente, a la direccion que tengamos nuestro pod (Direccion NodePort)
+
+Cuando hagamos esto el HPA si ve que sobrepasa el limite establecido lo ira escalando cuanto sea necesario hasta el maximo que pongamos.
+
+![](images/rancher/limite_hpa.png)
+
+En la siguiente imagen lo he sobrepasado y segun el porcentaje, ha tenido que crear otros 4 pods identicos.
