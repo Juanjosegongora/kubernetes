@@ -504,6 +504,8 @@ Nos pedira el nombre, tipo de nube(Amazon), nuestra region(Como la que hemos pue
 
 Para con seguir el `access key` y `secret key` debemos de ir a amazon y entrar en IAM, usuarios, credenciales de seguridad y le debemos dar a crear una nueva clave de acceso entonces amazon nos dara ambas cosas y las ponemos en rancher.
 
+![](images/rancher/cloud_credentials.png)
+
 ### CONFIGURAR NODE TEMPLATES
 Lo que vamos a configurar acontinuacion es las caracteristicas de maquinas de los nodos, al darle a agregar nodo nos dira que tipo de Nube que es amazon, la region y nuestra cloud credentials las zonas de red que hay en nuestra region ponemos las que queramos y la subred comgemos la que tenemos por defecto. Cuando le demos a siguiente tocaran los puertos abiertos para la maquina que ponemos que default de rancher esto abrira los que rancher crea oportunos.
 
@@ -515,7 +517,9 @@ https://github.com/rancher/os/blob/master/README.md/#user-content-amazon
 - IAM INSTANCE PROFILE NAME: Aqui ponemos el nombre del rol en el que hemos juntado las dos politicas antes, el que yo he llamado `all_role`
 - SSH User: Aqui tenemos que poner `rancher`
 
-Y por ultimo poner el nombre del node. 
+![](images/rancher/node_template.png)
+
+Y por ultimo poner el nombre del node.
 
 Para que sirve estod e NODE template realmente. por ejemplo si queremos que el master o los worker sean maquinas diferentes connfiguramos la maquina de una forma u otra creando varios.
 
@@ -523,6 +527,8 @@ Para que sirve estod e NODE template realmente. por ejemplo si queremos que el m
 Ya por ultimo crear el cluster, nos vamos a cluster y add cluster, seleccionamos el ec2 y le ponemos nomrbe a nuestro cluster
 
 Ponemos un prefiejo a la maquina, seleccionamos el template que hayamos creado y luego tenemos que seleccionar que nodos seran `etcd, controlpane o worker` podemos poner hasta cuantas queremos crear.
+
+![](images/rancher/creacion_cluster.png)
 
 Luego mas abajo nos pondra que cloud provider, deberemos seleccionar que amazon y damos en create y el cluster se empieza a crear.
 
