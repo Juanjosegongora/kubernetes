@@ -1,8 +1,33 @@
-# KUBERNETES.
+# KUBERNETES, RANCHER Y AWS.
 ## JUAN JOSE GONGORA CONTRERAS
+## INTRODUCCION AL PROYECTO.
+Este proyesto consistira en un aprendizaje del uso de contenedores y como orquestarlos entre maquinas. Para esto usaremos docker como gestor de contenedores y kubernetes como osquertador. El proyecto se dividira en las siguientes partes.
 
-# QUE ES KUBERNETES.
+- Introduccion de gestor de contendor y orquestador.
+- Entendimiento de como funciona Kubernetes y sus componentes mediante MiniKube.
+- Creacion de un Cluster de Kuberntes en maquinas virtuales KVM.
+- Creacion de un cluster de alta disponibilidad con Rancher y AWS.
+
+## CONTENEDORES Y ORQUESTADORES.
+
+Un contenedor es un proceso que ha sido aislado de todos los demás procesos en la máquina anfitriona. Ese aislamiento aprovecha características de Linux como los namespaces del kernel y cgroups. Aunque es posible tener más de un proceso en un contenedor las buenas prácticas nos recomiendan ejecutar sólo un proceso por contenedor (PID 1).
+
+Algunas ventajas son que podemos tener bastantes contenedores en maquinas puesto que comparten el mismo núcleo el contenedor que la maquina anfitriona, levantar un contenedor es rápido y también nos proporcionan que son portátiles puesto que tenemos la imagen.
+
+Entre los gestores de contenedores destacan: Docker, Podman y LXD.
+
+Un orquestador es una herramienta o sistema que automatiza el despliegue, gestión, escalado, interconexión y disponibilidad de los contenedores. 
+
+Entre ellos tenemos: Docker Swarm, Kubernetes, Apache Mesos, OpenShift.
+
+# QUE ES KUBERNETES Y PORQUE USARLO.
 Kubernetes en una plataforma de codido abierto para el despligue, escalado y gestion de aplicaciones contenedorizadas.
+
+Es software libre, que aunque es complejo es de los mas destacados por los componentes que ofrece (Pods, services…)
+
+Al ser tan destacada herramientas como Rancher la utilizan, y eso hace que no sea tan compleja porque Rancher se encarga de su gestión
+
+Por lo principal se utiliza con docker que eso hace que se asegure un funcionamiento rápido y eficaz
 
 # CLUSTER DE KUBERNETES.
 Esta compuesto por dos tipos de recursos.
@@ -289,7 +314,24 @@ nginx-5c7588df-kklnn   1/1     Running   0          17m     10.42.2.2   node2   
 nginx-5c7588df-vf8gt   1/1     Running   0          4m56s   10.42.0.6   master   <none>           <none>
 ```
 
-# INSTALACION DE CLUSTER DE KUBERNETES EN AWS CON RANCHER.
+# RANCHER
+
+Rancher es una aplicación Web que nos permite el uso de Kubernetes de una forma grafica, usándolo en un servidor privado con nuestra infraestructura o clouds de Internet como pueden ser:
+- Amazon Web Services.
+- Azure.
+- Google container engine.
+- DigitalOcean
+- Custom
+
+Rancher es una pila completa de software para equipos que adoptan contenedores. Aborda los desafíos operativos y de seguridad de administrar múltiples clústeres de Kubernetes en cualquier infraestructura, al tiempo que proporciona a los equipos de DevOps herramientas integradas para ejecutar cargas de trabajo en contenedores.
+
+Algunas de las características de Rancher podrían ser:
+
+- Gestión centralizada de cualquier grupo de Kubernetes
+- Una plataforma empresarial para administrar Kubernetes en todas partes
+- Sin ninguna plataforma de nube, puede ser personalizado
+- Aprovisionamiento de clúster
+
 ## INSTALACION DE RANCHER
 Para esto lanzaremos una maquina ec2 en nuestro AWS 
 
@@ -494,8 +536,6 @@ En el siguiente archivo JSON hay datos que hay que cambiar dependiendo de nuestr
 Cuando tengamos esto solo nos faltaria volver a los roles y crear el rol para la politica de `PASSROLE` como hemos hecho con las politicas anteriores.
 
 Lo siguiente como nos habiamos dejado el usuario sin darle los permisos ahora es el momento ya que los acabamos de hacer, nos tendriamos que ir a IAM, usuarios, 'nuestro usuario', agregar permisos, crear grupo nos ssaldra la lista de politicas, aqui agregamos las tres politicas que hemos creado antes `controlpane_policy, etcd_worker_policy` y `passrole_policy`. Por ejemplo le podemos llamar `policy_group`
-
-## CREACION DE CLUSTER EN RANCHER.
 
 ### AGREGAR CREDENCIALES DE AMAZON A RANCHER.
 Cuando nos vayamos a rancher tenemos que hacer dos cosas previas darle credenciales de AWS del usuario que hemos creado, en rancher nos vamos a `cloud credentials`, `add cloud credential`.
