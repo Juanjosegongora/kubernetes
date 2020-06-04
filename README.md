@@ -1,6 +1,14 @@
+---
+title: "Kubernetes"
+author: [Juan Jose Gongora Contreras]
+date: "2020-06-04"
+subject: "Markdown"
+keywords: [Markdown, README]
+lang: "en"
+toc-own-page: "true"
+---
 # KUBERNETES, RANCHER Y AWS.
-## JUAN JOSE GONGORA CONTRERAS
-## INTRODUCCION AL PROYECTO.
+# INTRODUCCION AL PROYECTO.
 Este proyesto consistira en un aprendizaje del uso de contenedores y como orquestarlos entre maquinas. Para esto usaremos docker como gestor de contenedores y kubernetes como osquertador. El proyecto se dividira en las siguientes partes.
 
 - Introduccion de gestor de contendor y orquestador.
@@ -8,7 +16,7 @@ Este proyesto consistira en un aprendizaje del uso de contenedores y como orques
 - Creacion de un Cluster de Kuberntes en maquinas virtuales KVM.
 - Creacion de un cluster de alta disponibilidad con Rancher y AWS.
 
-## CONTENEDORES Y ORQUESTADORES.
+# CONTENEDORES Y ORQUESTADORES.
 
 Un contenedor es un proceso que ha sido aislado de todos los demás procesos en la máquina anfitriona. Ese aislamiento aprovecha características de Linux como los namespaces del kernel y cgroups. Aunque es posible tener más de un proceso en un contenedor las buenas prácticas nos recomiendan ejecutar sólo un proceso por contenedor (PID 1).
 
@@ -62,7 +70,7 @@ Es una implementacion ligera de kubernetes que crea una maquina virtual localmen
 # OBJETOS DE KUBERNETES.
 Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
 
-## PARA LA GESTION DE KUBECTL
+# PARA LA GESTION DE KUBECTL
 - Para lanzar un archivo `YAML`
     - `kubectl apply -f ngnix.yaml`
 - Para ver objetos:
@@ -76,7 +84,7 @@ Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
     - `kubectl delete pod [nombre]`
     - `kubectl delete -f [archivo.yaml]`
 
-## TIPOS DE SERVICIOS
+# TIPOS DE SERVICIOS
 - ClusterIP.
     - El servicio recibe una Ip interna a nivel de cluster y hace que el servicio solo sea accesible a nivel de cluster.
 - NodePort.
@@ -92,7 +100,7 @@ Para crear uno de estos servicios hay que exponer el deployment y pasarle parame
 kubectl expose deployment jsonproducer --type=NodePort
 ```
 
-### NAMESPACES
+## NAMESPACES
 Todos los objetos creados estan en un mismo espacio, llamado default, si quisieramos cambiar ese espacio para tenerlo todo mejor organizado, tendriamos que crearlos.
 
 
@@ -113,7 +121,7 @@ kubectl config set-context --current --namespace=juan
 
 En este ultimo, todo lo que nos pongamos a hacer afecta solo a los objetos que estén en este NamesSpace, todo lo que mostremos será a partir de esto, quiere decir que si en el NameSpace default tenemos un Deployment que que llame hello-minikube, si cambiamos de NameSpace a `juan` por ejemplo, al mostrar nuestros deployments o pods no los motrará.
 
-### ESCALADO DE APLICACION.
+## ESCALADO DE APLICACION.
 A la hora de crear un deployment se puede aumentar el numero de replicas de pods que puede tener ese deploymment, y kubernetes automaticamente irá creando tantos pods como pongamos en las diferentes maquinas que tenga acceso. Gracias a esto es posible la actualizacion de aplucaciones en caliente.
 
 Si ejecutamos un deployment de prueba podemos ver lo siguiente.
