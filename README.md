@@ -1,13 +1,11 @@
 ---
-title: "Kubernetes"
+title: "KUBERNETES, RANCHER Y AWS."
 author: [Juan Jose Gongora Contreras]
-date: "2020-06-04"
 subject: "Markdown"
 keywords: [Markdown, README]
 lang: "en"
 toc-own-page: "true"
 ---
-# KUBERNETES, RANCHER Y AWS.
 # INTRODUCCION AL PROYECTO.
 Este proyesto consistira en un aprendizaje del uso de contenedores y como orquestarlos entre maquinas. Para esto usaremos docker como gestor de contenedores y kubernetes como osquertador. El proyecto se dividira en las siguientes partes.
 
@@ -16,7 +14,7 @@ Este proyesto consistira en un aprendizaje del uso de contenedores y como orques
 - Creacion de un Cluster de Kuberntes en maquinas virtuales KVM.
 - Creacion de un cluster de alta disponibilidad con Rancher y AWS.
 
-# CONTENEDORES Y ORQUESTADORES.
+## CONTENEDORES Y ORQUESTADORES.
 
 Un contenedor es un proceso que ha sido aislado de todos los demás procesos en la máquina anfitriona. Ese aislamiento aprovecha características de Linux como los namespaces del kernel y cgroups. Aunque es posible tener más de un proceso en un contenedor las buenas prácticas nos recomiendan ejecutar sólo un proceso por contenedor (PID 1).
 
@@ -28,7 +26,7 @@ Un orquestador es una herramienta o sistema que automatiza el despliegue, gesti�
 
 Entre ellos tenemos: Docker Swarm, Kubernetes, Apache Mesos, OpenShift.
 
-# QUE ES KUBERNETES Y PORQUE USARLO.
+## QUE ES KUBERNETES Y PORQUE USARLO.
 Kubernetes en una plataforma de codido abierto para el despligue, escalado y gestion de aplicaciones contenedorizadas.
 
 Es software libre, que aunque es complejo es de los mas destacados por los componentes que ofrece (Pods, services…)
@@ -37,7 +35,7 @@ Al ser tan destacada herramientas como Rancher la utilizan, y eso hace que no se
 
 Por lo principal se utiliza con docker que eso hace que se asegure un funcionamiento rápido y eficaz
 
-# CLUSTER DE KUBERNETES.
+## CLUSTER DE KUBERNETES.
 Esta compuesto por dos tipos de recursos.
 
 - Master: Coordina todas las actividades del cluster como organizar apicaciones, mantener el estado de aplicaciones, escalado, despliegue de actualizaciones. Tambien recoge informacion de los nodos worker y los pods.
@@ -46,7 +44,7 @@ Esta compuesto por dos tipos de recursos.
 
 En el despliegue de una aplicacion en Kubernetes el master es el que inicia y organiza los contenedores para que se ejecuten en los nodos del cluster. La comunicacion entre ellos se hace mediante la `API de Kubernetes`.
 
-# ARQUITECTURA DE KUBERNETES.
+## ARQUITECTURA DE KUBERNETES.
 En la siguiente imagen podemos ver los componentes mas importantes que tienen un master y un nodo.
 
 ![](images/1.png)
@@ -67,10 +65,10 @@ Es una implementacion ligera de kubernetes que crea una maquina virtual localmen
  - minikube start
  - minikube dashboard
 
-# OBJETOS DE KUBERNETES.
+## OBJETOS DE KUBERNETES.
 Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
 
-# PARA LA GESTION DE KUBECTL
+## PARA LA GESTION DE KUBECTL
 - Para lanzar un archivo `YAML`
     - `kubectl apply -f ngnix.yaml`
 - Para ver objetos:
@@ -84,7 +82,7 @@ Kubernetes tiene dos tipos de objetos, los basicos y los de nivel superior.
     - `kubectl delete pod [nombre]`
     - `kubectl delete -f [archivo.yaml]`
 
-# TIPOS DE SERVICIOS
+## TIPOS DE SERVICIOS
 - ClusterIP.
     - El servicio recibe una Ip interna a nivel de cluster y hace que el servicio solo sea accesible a nivel de cluster.
 - NodePort.
@@ -363,7 +361,7 @@ Despues de eso nos dejara acceder a rancher perfectamente.
 
 Para que todo lo que queremos hacer funcione necesitamos gestionar un servicio que nos ofrece AWS que se trata de IAM, con esto crearemos un usuario para rancher que le permita el acceso a nuestro AWS.
 
-### CREACION DE UN USUARIO EN AWS Y PROPORCIONARLE PERMISOS.
+## CREACION DE UN USUARIO EN AWS Y PROPORCIONARLE PERMISOS.
 
 Lo primero es crear el usuario que eso debemos de ir a los servicios de AWS y buscar IAM, alli a la seccion de usuario y como no tenemos ningun usuario nos sugiere crear uno.
 
@@ -545,7 +543,7 @@ Cuando tengamos esto solo nos faltaria volver a los roles y crear el rol para la
 
 Lo siguiente como nos habiamos dejado el usuario sin darle los permisos ahora es el momento ya que los acabamos de hacer, nos tendriamos que ir a IAM, usuarios, 'nuestro usuario', agregar permisos, crear grupo nos ssaldra la lista de politicas, aqui agregamos las tres politicas que hemos creado antes `controlpane_policy, etcd_worker_policy` y `passrole_policy`. Por ejemplo le podemos llamar `policy_group`
 
-### AGREGAR CREDENCIALES DE AMAZON A RANCHER.
+## AGREGAR CREDENCIALES DE AMAZON A RANCHER.
 Cuando nos vayamos a rancher tenemos que hacer dos cosas previas darle credenciales de AWS del usuario que hemos creado, en rancher nos vamos a `cloud credentials`, `add cloud credential`.
 
 Nos pedira el nombre, tipo de nube(Amazon), nuestra region(Como la que hemos puesto en las politicas), access key y secret key.
@@ -554,7 +552,7 @@ Para con seguir el `access key` y `secret key` debemos de ir a amazon y entrar e
 
 ![](images/rancher/cloud_credentials.png)
 
-### CONFIGURAR NODE TEMPLATES
+## CONFIGURAR NODE TEMPLATES
 Lo que vamos a configurar acontinuacion es las caracteristicas de maquinas de los nodos, al darle a agregar nodo nos dira que tipo de Nube que es amazon, la region y nuestra cloud credentials las zonas de red que hay en nuestra region ponemos las que queramos y la subred comgemos la que tenemos por defecto. Cuando le demos a siguiente tocaran los puertos abiertos para la maquina que ponemos que default de rancher esto abrira los que rancher crea oportunos.
 
 Lo siguiente son las especificaciones de la maquina que podemos escoger la instancia que queramos.
@@ -571,7 +569,7 @@ Y por ultimo poner el nombre del node.
 
 Para que sirve estod e NODE template realmente. por ejemplo si queremos que el master o los worker sean maquinas diferentes connfiguramos la maquina de una forma u otra creando varios.
 
-### CREACION DEL CLUSTER
+## CREACION DEL CLUSTER
 Ya por ultimo crear el cluster, nos vamos a cluster y add cluster, seleccionamos el ec2 y le ponemos nomrbe a nuestro cluster
 
 Ponemos un prefiejo a la maquina, seleccionamos el template que hayamos creado y luego tenemos que seleccionar que nodos seran `etcd, controlpane o worker` podemos poner hasta cuantas queremos crear.
