@@ -153,4 +153,4 @@ Comentar que despues de su instalacion habra que poner una password segura
 - Comprobar en el HPA como sobrepasa y va creando pods.
 
 # Final.
-Si queda tiempo montar mi memoria y la parte de K3S, el script automatizado y demas.
+Si queda tiempo mostrar mi memoria y la parte de K3S, el script automatizado y demas.
