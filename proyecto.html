@@ -377,7 +377,7 @@ nginx-5c7588df-vf8gt   1/1     Running   0          4m56s   10.42.0.6   master  
         }
     ]
 }</code></pre>
-<p>Lo que estamos haciendo en esta politica es darle a todo aquel que este asociado a esta politica el poder de los permisos como <code>ejecutar instancias, borrarlas, crear security groups y todo lo relacionado para la gestion que necesita rancher para la creacion del clsuter</code></p>
+<p>Lo que estamos haciendo en esta politica es darle a todo aquel que este asociado a esta politica el poder de los permisos como ejecutar instancias, borrarlas, crear security groups y todo lo relacionado para la gestion que necesita rancher para la creacion del clsuter.</p>
 <p>Despues revisamos la politica le ponemos un nombre por ejemplo <code>controlpane_policy</code> y la creamos.</p>
 <p>Ahora tendremos que hacer una para el <code>etcd y worker</code>, el mismo procesp pero el contenido del JSON es diferente, es este</p>
 <pre><code>{

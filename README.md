@@ -444,7 +444,7 @@ Crearemos una politica para el `controlpane` de nuestro fururo cluster de kubern
     ]
 }
 ```
-Lo que estamos haciendo en esta politica es darle a todo aquel que este asociado a esta politica el poder de los permisos como `ejecutar instancias, borrarlas, crear security groups y todo lo relacionado para la gestion que necesita rancher para la creacion del clsuter`
+Lo que estamos haciendo en esta politica es darle a todo aquel que este asociado a esta politica el poder de los permisos como ejecutar instancias, borrarlas, crear security groups y todo lo relacionado para la gestion que necesita rancher para la creacion del clsuter.
 
 Despues revisamos la politica le ponemos un nombre por ejemplo `controlpane_policy` y la creamos.
 

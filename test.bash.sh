@@ -1,8 +1,8 @@
 #!/bin/bash
-INPUT=exposicion.md
-OUTPUT_PDF=exposicion.pdf
-OUTPUT_HTML=exposicion.html
-OUTPUT_SLIDES=exposicion_p.html
+INPUT=README.md
+OUTPUT_PDF=proyecto.pdf
+OUTPUT_HTML=proyecto.html
+OUTPUT_SLIDES=proyecto_slider.html
 
 pandoc $INPUT -o $OUTPUT_PDF\
     --template ./templates/eisvogel.tex\
