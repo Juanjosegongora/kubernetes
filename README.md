@@ -7,7 +7,7 @@ lang: "en"
 toc-own-page: "true"
 ---
 # INTRODUCCION AL PROYECTO.
-Este proyecto consistirá en un aprendizaje del uso de contenedores y como orquestarlos entre máquinas. Para esto usaremos docker como gestor de contenedores y kubernetes como osquertador. El proyecto se dividirá en las siguientes partes.
+Este proyecto consistirá en un aprendizaje del uso de contenedores y como orquestarlos entre máquinas. Para esto usaremos docker como gestor de contenedores y kubernetes como orquestador. El proyecto se dividirá en las siguientes partes.
 
 - Introducción de gestor de contendor y orquestador.
 - Entendimiento de como funciona Kubernetes y sus componentes mediante MiniKube.
@@ -38,22 +38,22 @@ Por lo principal se utiliza con docker que eso hace que se asegure un funcionami
 ## CLUSTER DE KUBERNETES.
 Esta compuesto por dos tipos de recursos.
 
-- Master: Coordina todas las actividades del clúster como organizar aplicaciones, mantener el estado de aplicaciones, escalado, despliegue de actualizaciones. También recoge informacion de los nodos worker y los pods.
+- Máster: Coordina todas las actividades del clúster como organizar aplicaciones, mantener el estado de aplicaciones, escalado, despliegue de actualizaciones. También recoge informacion de los nodos worker y los pods.
 
-- Nodos: son workers que ejecutan las aplicaciones. Cada nodo contiene un agente llamado Kubelet que gestiona el nodo y mantiene la comunicación con el master.
+- Nodos: son workers que ejecutan las aplicaciones. Cada nodo contiene un agente llamado Kubelet que gestiona el nodo y mantiene la comunicación con el máster.
 
-En el despliegue de una aplicación en Kubernetes el master es el que inicia y organiza los contenedores para que se ejecuten en los nodos del clúster. La comunicación entre ellos se hace mediante la `API de Kubernetes`.
+En el despliegue de una aplicación en Kubernetes el máster es el que inicia y organiza los contenedores para que se ejecuten en los nodos del clúster. La comunicación entre ellos se hace mediante la `API de Kubernetes`.
 
 ## ARQUITECTURA DE KUBERNETES.
-En la siguiente imagen podemos ver los componentes mas importantes que tienen un master y un nodo.
+En la siguiente imagen podemos ver los componentes mas importantes que tienen un máster y un nodo.
 
 ![](images/1.png)
 
 - Plugins de red: Permiten la conexión entre pods de nodos diferentes y la integración de soluciones de red.
 - Es una base de datos de clave-valor donde Kubernetes guarda todos los datos del clúster.
-- API server: Componente del master que expone la API de Kubernetes
+- API server: Componente del máster que expone la API de Kubernetes
 - Control manager: se encarga de comprobar si el estado deseado coincide con el de la realidad.
-- Scheduler: Componente del master que observa que pods se han creado nuevos y no tienen nodo asignado, y les selecciona el nodo donde pueden ejecutarse.
+- Scheduler: Componente del máster que observa que pods se han creado nuevos y no tienen nodo asignado, y les selecciona el nodo donde pueden ejecutarse.
 - Kubelet: Agente que se ejecuta en cada nodo worker del clúster y que se asegura que los nodos están en ejecución y sanos. Kubelet no gestiona los pods que no han sido creados por kubernetes.
 - Kube-proxy: Mantiene las reglas del networking en los nodos para los pods que se ejecutan en él de acuerdo con las especificaciones de los manifiestos.
 - cAdvisor: Recoge los datos de uso de los contenedores.
@@ -102,12 +102,12 @@ kubectl expose deployment jsonproducer --type=NodePort
 Todos los objetos creados están en un mismo espacio, llamado default, si quisiéramos cambiar ese espacio para tenerlo todo mejor organizado, tendríamos que crearlos.
 
 
-Creacion de un NameSpace.
+Creación de un NameSpace.
 ```
 kubectl create namespace juan
 ```
 
-Creacion de un deployment asignando un NameSpace.
+Creación de un deployment asignando un NameSpace.
 ```
 kubectl run nginxtote --image=nginx --port 80 --namespace juan
 ```
@@ -165,9 +165,9 @@ Si queremos bajar el número de pods nos bastaría con poner el mismo comando qu
 
 # K3S
 ## INSTALACION DE SERVIDOR DE K3S
-Para la instalación del servidor de K3S necesitamos tener como minio un master y un worker, yo lo haré con un Master y dos workers.
+Para la instalación del servidor de K3S necesitamos tener como minio un máster y un worker, yo lo haré con un máster y dos workers.
 
-Cuando las máquinas estén listas tenemos que empezar desde la máquina `master` a realizar las operaciones, procedemos a descargar el paquete K3S, como K3S por así decirlo es un comando, lo que haremos sera descargarlo directamente en una ruta del PATH como por ejemplo `/usr/local/bin`
+Cuando las máquinas estén listas tenemos que empezar desde la máquina `máster` a realizar las operaciones, procedemos a descargar el paquete K3S, como K3S por así decirlo es un comando, lo que haremos sera descargarlo directamente en una ruta del PATH como por ejemplo `/usr/local/bin`
 
 ```
 cd /usr/lcoal/bin
@@ -180,12 +180,12 @@ Le proporcionamos permisos de ejecución.
 ```
 chmod +x k3s
 ```
-Para comenzar a desplegar el clúster con el nodo master tenemos que poner un comando muy sencillo.
+Para comenzar a desplegar el clúster con el nodo máster tenemos que poner un comando muy sencillo.
 
 ```
 k3s server &
 ```
-Con esto el master ya esta listo y el clúster ya esta funcionando y podríamos ejecutar comandos `kubectl` siempre con el comando K3S por delante un ejemplo.
+Con esto el máster ya esta listo y el clúster ya esta funcionando y podríamos ejecutar comandos `kubectl` siempre con el comando K3S por delante un ejemplo.
 ```
 k3s kubectl get nodes
 ```
@@ -194,11 +194,11 @@ Y nos puede salir algo parecido a esto.
 NAME     STATUS     ROLES    AGE   VERSION
 master   Ready      <none>   27h   v1.13.4-k3s.1
 ```
-Con esto el master esta listo, ahora tenemos que implementar los workers al clúster, empezamos accediendo a alguno de ellos y descargando el paquete y proporcionando permisos como en el `master` cuando todo eso este listo tenemos que ejecutar una instrucción.
+Con esto el máster esta listo, ahora tenemos que implementar los workers al clúster, empezamos accediendo a alguno de ellos y descargando el paquete y proporcionando permisos como en el `máster` cuando todo eso este listo tenemos que ejecutar una instrucción.
 ```
 k3s agent --server https://[IP_MAASTER]]:6443 --token [TOKEN_MASTER]
 ```
-Nos encontramos con que no sabemos el token, esto lo podemos sacar en la máquina master en el siguiente archivo `/var/lib/rancher/k3s/server/node-token`
+Nos encontramos con que no sabemos el token, esto lo podemos sacar en la máquina máster en el siguiente archivo `/var/lib/rancher/k3s/server/node-token`
 
 ```
 cat /var/lib/rancher/k3s/server/node-token
@@ -208,7 +208,7 @@ El contenido se ese archivo sera el token que necesitamos entonces el comando de
 ```
 k3s agent --server https://192.168.122.2:6443 --token K10d6ccdb07ebdb6594f22aac004bfa36d6c0ed04d584bb295b8cdaf5c57ac582c5::node:5a2356bfd0d35a9fd2dbc55041727a08
 ```
-Tendremos que hacer lo mismo con el otro worker y de esta manera mediante el nodo master podríamos ejecutar las intrucciones `kubectl`
+Tendremos que hacer lo mismo con el otro worker y de esta manera mediante el nodo máster podríamos ejecutar las intrucciones `kubectl`
 
 ```
 k3s kubectl get nodes
@@ -221,7 +221,7 @@ node2    Ready    <none>   20m   v1.13.4-k3s.1
 ```
 
 ## CONFIGURACION DE KUBE EN UNA MAQUINA PARA MANEJAR EL CLUSTER.
-Para configurar El clúster creado por K3s se podría hacer desde el master pero hay una forma mas cómoda, que es poder configurarlo desde otra máquina cliente o local, para ello en esa máquina debemos tener instalado Kubectl y algunas cosas que nos pueden servir.
+Para configurar El clúster creado por K3s se podría hacer desde el máster pero hay una forma mas cómoda, que es poder configurarlo desde otra máquina cliente o local, para ello en esa máquina debemos tener instalado Kubectl y algunas cosas que nos pueden servir.
 
 INSTALACION DE ALGUNOS PAQUETES QUE NOS HACEN FALTA.
 ```
@@ -235,7 +235,7 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/
 apt-get update
 apt install kubectl -y
 ```
-Cuando este instalado lo configuraremos para que coja todas las credenciales y demás del nodo master, para ello lo hacemos mediante un archivo de configuración, creamos en nuestra carpeta personal una carpeta que se llame `.kube` de ahí nos conectamos al master mediante scp para coger un archivo de configuración que se encuentra en `/etc/rancher/k3s` y se llama `k3s.yaml`. Lo cogemos a nuestra máquina con el nombre de config, de la siguiente manera.
+Cuando este instalado lo configuraremos para que coja todas las credenciales y demás del nodo máster, para ello lo hacemos mediante un archivo de configuración, creamos en nuestra carpeta personal una carpeta que se llame `.kube` de ahí nos conectamos al máster mediante scp para coger un archivo de configuración que se encuentra en `/etc/rancher/k3s` y se llama `k3s.yaml`. Lo cogemos a nuestra máquina con el nombre de config, de la siguiente manera.
 
 ```
 mkdir .kube
@@ -243,12 +243,12 @@ cd .kube
 scp [IP_MASTER]:/etc/rancher/k3s/k3s.yaml config
 ```
 
-Cuando lo tengamos tendremos que editarlo porque esta configurado para la máquina local, tendremos que decirle donde se encuentra el master, así que la linea siguiente
+Cuando lo tengamos tendremos que editarlo porque esta configurado para la máquina local, tendremos que decirle donde se encuentra el máster, así que la linea siguiente
 
 ```
 https://localhost:6443
 ```
-Cambiamos localhost por la Ip del master en mi caso
+Cambiamos localhost por la Ip del máster en mi caso
 ```
 server: https://192.168.122.2:6443
 ```
@@ -264,7 +264,7 @@ master   Ready    <none>   63m   v1.13.4-k3s.1
 node1    Ready    <none>   36m   v1.13.4-k3s.1
 node2    Ready    <none>   20m   v1.13.4-k3s.1
 ```
-Ahora podríamos hacer cualquier cosa con kubernetes y el master estaría balanceado entre los nodos
+Ahora podríamos hacer cualquier cosa con kubernetes y el máster estaría balanceado entre los nodos
 
 Como prueba podemos crear por ejemplo un deployment con nginx
 ```
@@ -282,7 +282,7 @@ deployment.extensions/nginx   1/1     1            1           85s
 NAME                       READY   STATUS    RESTARTS   AGE
 pod/nginx-5c7588df-kklnn   1/1     Running   0          85s
 ```
-Para la conexion a ese pod que hemos creado vamos por medio de la IP del nodo master y creando un servicio de tipo nodeport
+Para la conexion a ese pod que hemos creado vamos por medio de la IP del nodo máster y creando un servicio de tipo nodeport
 ```
 kubectl expose deploy nginx --port=80 --type=NodePort
 ```
@@ -363,7 +363,7 @@ Para que todo lo que queremos hacer funcione necesitamos gestionar un servicio q
 
 ## CREACION DE UN USUARIO EN AWS Y PROPORCIONARLE PERMISOS.
 
-Lo primero es crear el usuario que eso debemos de ir a los servicios de AWS y buscar IAM, allí a la seccion de usuario y como no tenemos ningún usuario nos sugiere crear uno.
+Lo primero es crear el usuario que eso debemos de ir a los servicios de AWS y buscar IAM, allí a la sección de usuario y como no tenemos ningún usuario nos sugiere crear uno.
 
 Rellenamos el nombre de usuario y después tenemos que seleccionar que tipo de acceso tendrá ese usuario, seleccionaremos el segundo, que s mediante consola. La clave podemos escoger una o que la genere automática, sugiero automática.
 
@@ -478,7 +478,7 @@ Lo siguiente es crear roles y asociarlos cada uno a su política. Para ellos nos
 
 Importante crear otra política que una estas dos, es decir, creamos otro rol que y le asociamos `controlpane_policy` y `etcd_worker_policy` y por ejemplo podemos llamarla `all_role`
 
-Ahora volveríamos a la creacion de política para crear la ultima política que nos hace falta `PASSROLE`
+Ahora volveríamos a la creación de política para crear la ultima política que nos hace falta `PASSROLE`
 
 Necesitaremos lo siguiente
 - ID de nuestra cuenta de AWS, esto lo podemos encontrar dando en nuestro nombre de usuario arriba a la derecha, mi cuenta.
@@ -567,7 +567,7 @@ https://github.com/rancher/os/blob/master/README.md/#user-content-amazon
 
 Y por ultimo poner el nombre del node.
 
-Para que sirve esto de NODE template realmente. por ejemplo si queremos que el master o los worker sean máquinas diferentes configuramos la máquina de una forma u otra creando varios.
+Para que sirve esto de NODE template realmente. por ejemplo si queremos que el máster o los worker sean máquinas diferentes configuramos la máquina de una forma u otra creando varios.
 
 ## CREACION DEL CLUSTER
 Ya por ultimo crear el clúster, nos vamos a clúster y add clúster, seleccionamos el ec2 y le ponemos nombre a nuestro clúster
@@ -592,7 +592,7 @@ Si por ejemplo hemos creado un nodeport y queremos acceder a esa máquina desde 
 ## AUTO ESCALADO HORIZONTAL CON RANCHER.
 Esto se hace mediante HPA, en los pods hay que limitarles los milicpu, sino no nos dejara ponerle un HPA.
 
-Al crear un Deploy tenemos que ver las opciones avanzadas de la creacion e irnos a `Security & Host config` y aquí bajar hasta encontrar CPU reservation y limitarle las CPUs. Si lo dejamos sin reservar HPA no podrá realizar el escalado, para probar podemos reservar pocas, por ejemplo 100 o 200 y darle a Launch.
+Al crear un Deploy tenemos que ver las opciones avanzadas de la creación e irnos a `Security & Host config` y aquí bajar hasta encontrar CPU reservation y limitarle las CPUs. Si lo dejamos sin reservar HPA no podrá realizar el escalado, para probar podemos reservar pocas, por ejemplo 100 o 200 y darle a Launch.
 
 ![](images/rancher/reservar_cpu.png)
 
