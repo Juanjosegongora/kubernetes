@@ -1,0 +1,49 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:Describe*",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteKeyPair"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances",
+                "iam:PassRole"
+            ],
+            "Resource": [
+                "arn:aws:ec2:us-east-2::image/ami-*",
+                "arn:aws:ec2:us-east-2:071416935203:instance/*",
+                "arn:aws:ec2:us-east-2:071416935203:placement-group/*",
+                "arn:aws:ec2:us-east-2:071416935203:volume/*",
+                "arn:aws:ec2:us-east-2:071416935203:subnet/*",
+                "arn:aws:ec2:us-east-2:071416935203:key-pair/*",
+                "arn:aws:ec2:us-east-2:071416935203:network-interface/*",
+                "arn:aws:ec2:us-east-2:071416935203:security-group/*",
+                "arn:aws:iam::071416935203:role/*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RebootInstances",
+                "ec2:TerminateInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "arn:aws:ec2:us-east-2:071416935203:instance/*"
+        }
+    ]
+}
