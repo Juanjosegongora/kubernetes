@@ -23,15 +23,15 @@
                 "iam:PassRole"
             ],
             "Resource": [
-                "arn:aws:ec2:us-east-2::image/ami-*",
-                "arn:aws:ec2:us-east-2:071416935203:instance/*",
-                "arn:aws:ec2:us-east-2:071416935203:placement-group/*",
-                "arn:aws:ec2:us-east-2:071416935203:volume/*",
-                "arn:aws:ec2:us-east-2:071416935203:subnet/*",
-                "arn:aws:ec2:us-east-2:071416935203:key-pair/*",
-                "arn:aws:ec2:us-east-2:071416935203:network-interface/*",
-                "arn:aws:ec2:us-east-2:071416935203:security-group/*",
-                "arn:aws:iam::071416935203:role/*"
+                "arn:aws:ec2:REGION::image/ami-*",
+                "arn:aws:ec2:REGION:USER_ID:instance/*",
+                "arn:aws:ec2:REGION:USER_ID:placement-group/*",
+                "arn:aws:ec2:REGION:USER_ID:volume/*",
+                "arn:aws:ec2:REGION:USER_ID:subnet/*",
+                "arn:aws:ec2:REGION:USER_ID:key-pair/*",
+                "arn:aws:ec2:REGION:USER_ID:network-interface/*",
+                "arn:aws:ec2:REGION:USER_ID:security-group/*",
+                "arn:aws:iam::USER_ID:role/*"
             ]
         },
         {
@@ -43,7 +43,7 @@
                 "ec2:StartInstances",
                 "ec2:StopInstances"
             ],
-            "Resource": "arn:aws:ec2:us-east-2:071416935203:instance/*"
+            "Resource": "arn:aws:ec2:REGION:USER_ID:instance/*"
         }
     ]
 }
